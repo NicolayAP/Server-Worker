@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>PWA Taller</title>
+</head>
+
+<body>
+
+<h2>Haz clic en la imagen</h2>
+
+<script>
+
+navigator.serviceWorker.register('sw.js');
+
+const img = new Image();
+
+setTimeout(() => {
+  img.src = 'dog.svg';
+  document.body.appendChild(img);
+}, 1000);
+
+img.addEventListener('click', () => {
+
+  if (navigator.serviceWorker.controller) {
+
+    navigator.serviceWorker.controller.postMessage({
+      action: 'randomImage'
+    });
+
+    img.src = 'dog.svg?t=' + Date.now();
+  }
+
+});
+
+</script>
+
+<button id="loadData">Cargar datos</button>
+<pre id="output"></pre>
+
+<script>
+document.getElementById("loadData").addEventListener("click", () => {
+  fetch("data.json")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("output").textContent =
+        JSON.stringify(data, null, 2);
+    });
+});
+</script>
+</body>
+</html>
